@@ -36,47 +36,40 @@ finish
 
 = Study
 
-:'<,'>normal @q
-run the macro recorded into the q register on all selected lines (the '<,'> is automatically added)
-
-:let @q="2dw"
-easily fill the q register with a macro that deletes two words
-
-norm
-what's a good shorthand for "normal" on the #vim_command_line
-
-:argdo norm @q
-run your last macro against all files in the args
-
-:.,. w !sh
-execute the contents of the current line in the current file in sh
-
-<c-]>
-if you have ctags working correctly, how do you jump to the definition of a function?
-
-<c-t>
-if you've made a ctag jump, how can you jump back other than <c-o>?
-
-gi
-if you left insert mode to go look at something elsewhere in the file, how can you get back to where you were and also back into insert mode?
-
-:tag save
-if you want to look up the definition of save using ctags
-
-:w !sh
-run the visually selected lines in the shell (not run as a filter)
-
-g?(some movement)
-rot13 the text selected by some movement
-
-:all
-open in window for each file in the arguments list
-
-:args
-display the argument list
-
 :reg<enter>
 show the contents of all registers
+" There are nine types of registers:
+" 1. The unnamed register ""
+" Vim fills this register with text deleted with the "d", "c", "s", "x" commands
+" or copied with the yank "y" command, regardless of whether or not a specific
+" register was used (e.g.  "xdd).  This is like the unnamed register is pointing
+" to the last used register.  An exception is the '_' register: "_dd does not
+" store the deleted text in any register.
+" Vim uses the contents of the unnamed register for any put command (p or P)
+" which does not specify a register.  Additionally you can access it with the
+" name '"'.  This means you have to type two double quotes.  Writing to the "" register writes to register "0.
+" 2. 10 numbered registers "0 to "9
+"   Numbered register 0 contains the text from the most recent yank command,
+"unless the command specified another register with ["x].
+"   Numbered register 1 contains the text deleted by the most recent delete or
+"change command, unless the command specified another register or the text is
+"less than one line (the small delete register is used then). 
+"   With each successive deletion or change, Vim shifts the previous contents
+"of register 1 into register 2, 2 into 3, and so forth, losing the previous
+"contents of register 9.
+" 3. The small delete register "-
+" This register contains text from commands that delete less than one line,
+" except when the command specifies a register with ["x].
+" 4. 26 named registers "a to "z or "A to "Z
+" Vim fills these registers only when you say so.  Specify them as lowercase
+" letters to replace their previous contents or as uppercase letters to append
+" to their previous contents.  When the '>' flag is present in 'cpoptions' then
+" 5. four read-only registers ":, "., "% and "#
+" 6. the expression register "=
+" 7. The selection and drop registers "*, "+ and "~ 
+" 8. The black hole register "_
+" 9. Last search pattern register "/
+
 
 :tj<enter>
 jump to tag on top of tag stack
@@ -870,7 +863,54 @@ turn snake_case into camelCase
 :s/\%V\v_([a-z])/\u\1/g
 turn snake_case into camelCase (in only the visually selected part of line)
 
+:'<,'>normal @q
+run the macro recorded into the q register on all selected lines (the '<,'> is automatically added)
+" help @{0-9a-z".=*}		
+" Execute the contents of register {0-9a-z".=*} [count] times.  
+
+:let @q="2dw"
+easily fill the q register with a macro that deletes two words
+
+norm
+what's a good shorthand for "normal" on the #vim_command_line
+
+:argdo norm @q
+run your last macro against all files in the args
+" :argdo[!] {cmd}		Execute {cmd} for each file in the argument list.
+
+:.,. w !sh
+execute the contents of the current line in the current file in sh
+" help :w
+" :[range]w[rite] [++opt] !{cmd} 
+" Execute {cmd} with [range] lines as standard input
+"
+<c-]>
+if you have ctags working correctly, how do you jump to the definition of a function?
+
+<c-t>
+if you've made a ctag jump, how can you jump back other than <c-o>?
+
+gi
+if you left insert mode to go look at something elsewhere in the file, how can you get back to where you were and also back into insert mode?
+" help gi
+" Insert text in the same position as where Insert mode was stopped last time in the current buffer.
+
+:tag save
+if you want to look up the definition of save using ctags
+
+g?(some movement)
+rot13 the text selected by some movement
+
+:all
+open in window for each file in the arguments list, close other windows
+
+:args
+display the argument list
+
 = Known
+
+:w !sh
+run the visually selected lines in the shell (not run as a filter)
 
 :help shell<TAB>
 how can you see what *all* the commands starting with 'shell' when considering getting help
