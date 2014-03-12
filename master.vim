@@ -36,6 +36,123 @@ finish
 
 = Study
 
+
+-
+in normal mode, how do you move to the first non-whitespace character of the previous line
+
++
+in normal mode, how do you move to the first non-whitespace character of the next line
+
+g`"
+how do you nondestructively move back to the last position when the buffer was closed
+
+:!mkdir -p %:p:h
+if you have a file that you can't save because its directory doesn't exist, how can you create that directory from the path component of the file?
+" help :% 
+" the entire file
+"
+" help filename-mofifiers
+" :p  make file name a full path, must be the first modifier.
+" :~  reduce file name to be relative to the home directory
+" :.  reduce file name to be relative to current directory
+" :h  head of the filename(the last component and any seperators removed)
+" :t  tail of the filename(last component of the name)
+" :r  root of the filename(last extension removed)
+" :e  extension of the filename
+" :s?pat?sub? substitute the first occurrence of pat to sub.
+" :gs?pat?sub? substitute all occurrences of pat to sub
+"
+" Examples, when the file name is "src/version.c", current dir
+"/home/mool/vim": >
+" :p			/home/mool/vim/src/version.c
+" :p:.				       src/version.c
+" :p:~				 ~/vim/src/version.c
+" :h				       src
+" :p:h			/home/mool/vim/src
+" :p:h:h		/home/mool/vim
+" :t					   version.c
+" :p:t					   version.c
+" :r				       src/version
+" :p:r			/home/mool/vim/src/version
+" :t:r					   version
+" :e						   c
+" :s?version?main?		       src/main.c
+" :s?version?main?:p	/home/mool/vim/src/main.c
+" :p:gs?/?\\?		\home\mool\vim\src\version.c
+"
+"Examples, when the file name is "src/version.c.gz": >
+" :p			/home/mool/vim/src/version.c.gz
+" :e						     gz
+" :e:e						   c.gz
+" :e:e:e					   c.gz
+" :e:e:r					   c
+" :r				       src/version.c
+" :r:e						   c
+" :r:r				       src/version
+" :r:r:r			       src/version
+
+:set textwidth=78
+how do you make vim hard wrap at 78 chars?
+" Maximum width of text that is being inserted.  A longer line will be
+" broken after white space to get this width.  A zero value disables
+" this.  'textwidth' is set to 0 when the 'paste' option is set.  
+
+:s/\v([a-z])([A-Z])/\1_\L\2/g
+turn camelCase into snake_case
+
+:s/\%V\v([a-z])([A-Z])/\1_\L\2/g
+turn camelCase into snake_case (in only the visually selected part of the line)
+
+:s/\v_([a-z])/\u\1/g
+turn snake_case into camelCase
+
+:s/\%V\v_([a-z])/\u\1/g
+turn snake_case into camelCase (in only the visually selected part of line)
+
+:'<,'>normal @q
+run the macro recorded into the q register on all selected lines (the '<,'> is automatically added)
+" help @{0-9a-z".=*}		
+" Execute the contents of register {0-9a-z".=*} [count] times.  
+
+:let @q="2dw"
+easily fill the q register with a macro that deletes two words
+
+norm
+what's a good shorthand for "normal" on the #vim_command_line
+
+:argdo norm @q
+run your last macro against all files in the args
+" :argdo[!] {cmd}		Execute {cmd} for each file in the argument list.
+
+:.,. w !sh
+execute the contents of the current line in the current file in sh
+" help :w
+" :[range]w[rite] [++opt] !{cmd} 
+" Execute {cmd} with [range] lines as standard input
+"
+<c-]>
+if you have ctags working correctly, how do you jump to the definition of a function?
+
+<c-t>
+if you've made a ctag jump, how can you jump back other than <c-o>?
+
+gi
+if you left insert mode to go look at something elsewhere in the file, how can you get back to where you were and also back into insert mode?
+" help gi
+" Insert text in the same position as where Insert mode was stopped last time in the current buffer.
+
+:tag save
+if you want to look up the definition of save using ctags
+
+g?(some movement)
+rot13 the text selected by some movement
+
+:all
+open in window for each file in the arguments list, close other windows
+
+:args
+display the argument list
+
 :reg<enter>
 show the contents of all registers
 " There are nine types of registers:
@@ -65,11 +182,30 @@ show the contents of all registers
 " letters to replace their previous contents or as uppercase letters to append
 " to their previous contents.  When the '>' flag is present in 'cpoptions' then
 " 5. four read-only registers ":, "., "% and "#
+" ".	Contains the last inserted text (the same as what is inserted
+"   	with the insert mode commands CTRL-A and CTRL-@).  Note: this
+"   	doesn't work with CTRL-R on the command-line.  It works a bit
+" "%	Contains the name of the current file.
+" "#	Contains the name of the alternate file.
+" ":	Contains the most recent executed command-line.  Example: Use
+"       "@:" to repeat the previous command-line command.
 " 6. the expression register "=
+" This is not really a register that stores text, but is a way to use an
+" expression in commands which use a register.  The expression register is
+" read-only; you cannot put text into it.  After the '=', the cursor moves to
+" the command-line, where you can enter any expression (see |expression|).  All
+" normal command-line editing commands are available, including a special
+" history for expressions.  When you end the command-line by typing <CR>, Vim
+" computes the result of the expression.  If you end it with <Esc>, Vim abandons
+" the expression.  If you do not enter an expression, Vim uses the previous
+" expression (like with the "/" command).
 " 7. The selection and drop registers "*, "+ and "~ 
 " 8. The black hole register "_
+" When writing to this register, nothing happens.  This can be used to delete
+" text without affecting the normal registers.  When reading from this register,
+" nothing is returned.  {not in Vi}
 " 9. Last search pattern register "/
-
+" Contains the most recent search-pattern.
 
 :tj<enter>
 jump to tag on top of tag stack
@@ -79,21 +215,35 @@ show the contents of register a
 
 :10,30!wc<enter>
 filter lines 10-30 through an external command (in this case wc)
+" help filter
+" :{range}![!]{filter} [!][arg]				*:range!*
+" Filter {range} lines through the external program
+" {filter}.  Vim replaces the optional bangs with the
+" latest given command and appends the optional [arg].
+" Vim saves the output of the filter command in a
+" temporary file and then reads the file into the buffer
+" |tempfile|.
 
 <c-v>8
-insert the character represented by the ASCII value 8
+in insert mode, insert the character represented by the ASCII value 8
 
 :43,45d<enter>
 delete lines 43-45 (can specify any range before the d)
+" help :d
+" :[range]d[elete] [x]	Delete [range] lines (default: current line) [into register x].
 
 H
 go to the top of the screen
+" help H
+" To line [count] from top (Home) of window (default: first line on the window) on the first non-blank
+" character |linewise|.  
 
 "a20yy
 add the next 20 lines to the 'a' register
 
-g~(some movement)
+g~(motion)
 switch case for movement command
+" g~w
 
 o
 in visual mode, exchange cursor position with the start/end of highlighting
@@ -121,6 +271,7 @@ go to the line that is 20% of the way down in the file
 
 `a
 go to the exact position of mark a (not just the beginning of the line like 'a)
+" m{a-zA-Z}		Set mark {a-zA-Z} at cursor position (does not move the cursor, this is not a motion command).
 
 <c-d>
 Go down half a screen
@@ -160,6 +311,9 @@ Forward find word under cursor (fuzzy)
 
 g#
 Backward find word under cursor (fuzzy)
+" help g#
+" Like "#", but don't put "\<" and "\>" around the word.
+" This makes the search also find matches that are not a whole word.
 
 #
 Backward find word under cursor
@@ -217,10 +371,15 @@ mark: set a mark in the 'A' register (globally)
 
 gu
 make the selected text lower case
+" gu{motion}		Make {motion} text lowercase. {not in Vi}
+" gugu							*gugu* *guu*
+" guu			Make current line lowercase. {not in Vi}.
 
 gU
 make the selected text upper case
-
+" gUgU							*gUgU* *gUU*
+" gUU			Make current line uppercase. {not in Vi}.
+ 
 <c-r>"
 paste yanked text into the #vim_command_line
 
@@ -266,8 +425,8 @@ lower case the whole line
 gUU
 upper case the whole line
 
-display hex and ASCII value of character under cursor
 ga
+display hex and ASCII value of character under cursor
 
 g8
 display hex value of utf-8 character under cursor
@@ -414,7 +573,7 @@ back a sentence
 forward a sentence
 
 %
-find matching parenthesis
+find matching pare
 
 J
 join two lines
@@ -478,12 +637,20 @@ append lines 10-30 to a file named foo.txt
 
 :r !ls
 insert results of ls external command below cursor
+" help :r
+" :[range]r[ead] !{cmd}	Execute {cmd} and insert its standard output below
+" 			the cursor or the specified line.  A temporary file is
+" 			used to store the output of the command which is then
+" 			read into the buffer. 
 
 :r file
 insert content of file below cursor
+" help :r
+" :r[ead] [++opt] [name]
+"			Insert the file [name] (default: current file) below the cursor.
 
 &
-repeat last substitution
+repeat last substitution, same as :s
 
 :bm
 go to next modified buffer
@@ -591,19 +758,49 @@ repeat the last command
 switch between windows
 
 [I
-show lines containing the word under the cursor
+show lines containing the word under the cursor. The search starts at the beginning of the file.
 
-redir @a
+]I
+like "[I", but start at the current cursor position.
+
+:redir @a
 redirect the output of an Ex command into buffer a
 
 g?
 reverse the characters in a visual selection
+" {Visual}g?		Rot13 encode the highlighted text 
+" g?g?							*g?g?* *g??*
+" g??			Rot13 encode current line. {not in Vi}.
 
 :gui
 switch to the gui version
 
 :g/foo/p
 list all the matches with prepended line numbers in ex command output
+" help :g
+" :[range]g[lobal]/{pattern}/[cmd]
+" 			Execute the Ex command [cmd] (default ":p") on the
+" 			lines within [range] where {pattern} matches.
+" 
+" :[range]g[lobal]!/{pattern}/[cmd]
+" 			Execute the Ex command [cmd] (default ":p") on the
+" 			lines within [range] where {pattern} does NOT match.
+" 
+" :[range]v[global]/{pattern}/[cmd]
+" 			Same as :g!.
+" 
+" To repeat a non-Ex command, you can use the ":normal" command: >
+" 	:g/pat/normal {commands}
+" Make sure that {commands} ends with a whole command, otherwise Vim will wait
+" for you to type the rest of the command for each match.  The screen will not
+" have been updated, so you don't know what you are doing.
+" The global command sets both the last used search pattern and the last used
+" substitute pattern (this is vi compatible).  This makes it easy to globally
+" replace a string:
+" 	:g/pat/s//PAT/g
+" This replaces all occurrences of "pat" with "PAT".  The same can be done with:
+" 	:%s/pat/PAT/g
+" Which is two characters shorter!
 
 <c-a>
 insert previously inserted text (in insert mode)
@@ -623,7 +820,7 @@ visually select *around* a set of parentheses.  Try it by moving the cursor (som
 redir @a | :g/someregex/
 Capture the lines that match a certain regex into the @a register for pasting
 
-rm /tmp/clip.txt ; vim -c "normal \"+p" -c "wq" /tmp/clip.txt
+vim -c "normal \"+p" -c "wq" /tmp/clip.txt
 Save the contents of the clipboard to a file by opening, pasting into, and closing vim.
 
 gD
@@ -632,8 +829,9 @@ go to the first occurrence in the file of the word under the cursor
 gj
 go to next visual line, even if text wrapped
 
-%s/\v(.*\n){5}/&\r
+:%s/\v(.*\n){5}/&\r
 insert a blank line every 5 lines
+"\r split line in two at this point
 
 ''
 go to the position before the latest jump
@@ -739,6 +937,7 @@ Append the yank of the current line into the 'a' buffer
 
 %v/bar/m$
 move every line that *does not* contain bar to the end of the file
+" :[range]v[global]/{pattern}/[cmd] Same as :g!.
 
 :verb set ballooneval?
 how can you check who last set ballooneval
@@ -790,122 +989,6 @@ how can you decrement the first number on the first line of the file? (how would
 
 /\cruby
 do a case-insensitive search for ruby (the \c can be anywhere, including at the end)
-
--
-in normal mode, how do you move to the first non-whitespace character of the previous line
-
-+
-in normal mode, how do you move to the first non-whitespace character of the next line
-
-g`"
-how do you nondestructively move back to the last position when the buffer was closed
-
-:!mkdir -p %:p:h
-if you have a file that you can't save because its directory doesn't exist, how can you create that directory from the path component of the file?
-" help :% 
-" the entire file
-"
-" help filename-mofifiers
-" :p  make file name a full path, must be the first modifier.
-" :~  reduce file name to be relative to the home directory
-" :.  reduce file name to be relative to current directory
-" :h  head of the filename(the last component and any seperators removed)
-" :t  tail of the filename(last component of the name)
-" :r  root of the filename(last extension removed)
-" :e  extension of the filename
-" :s?pat?sub? substitute the first occurrence of pat to sub.
-" :gs?pat?sub? substitute all occurrences of pat to sub
-"
-" Examples, when the file name is "src/version.c", current dir
-"/home/mool/vim": >
-" :p			/home/mool/vim/src/version.c
-" :p:.				       src/version.c
-" :p:~				 ~/vim/src/version.c
-" :h				       src
-" :p:h			/home/mool/vim/src
-" :p:h:h		/home/mool/vim
-" :t					   version.c
-" :p:t					   version.c
-" :r				       src/version
-" :p:r			/home/mool/vim/src/version
-" :t:r					   version
-" :e						   c
-" :s?version?main?		       src/main.c
-" :s?version?main?:p	/home/mool/vim/src/main.c
-" :p:gs?/?\\?		\home\mool\vim\src\version.c
-"
-"Examples, when the file name is "src/version.c.gz": >
-" :p			/home/mool/vim/src/version.c.gz
-" :e						     gz
-" :e:e						   c.gz
-" :e:e:e					   c.gz
-" :e:e:r					   c
-" :r				       src/version.c
-" :r:e						   c
-" :r:r				       src/version
-" :r:r:r			       src/version
-
-:set textwidth=78
-how do you make vim hard wrap at 78 chars?
-" Maximum width of text that is being inserted.  A longer line will be
-" broken after white space to get this width.  A zero value disables
-" this.  'textwidth' is set to 0 when the 'paste' option is set.  
-
-:s/\v([a-z])([A-Z])/\1_\L\2/g
-turn camelCase into snake_case
-
-:s/\%V\v([a-z])([A-Z])/\1_\L\2/g
-turn camelCase into snake_case (in only the visually selected part of the line)
-
-:s/\v_([a-z])/\u\1/g
-turn snake_case into camelCase
-
-:s/\%V\v_([a-z])/\u\1/g
-turn snake_case into camelCase (in only the visually selected part of line)
-
-:'<,'>normal @q
-run the macro recorded into the q register on all selected lines (the '<,'> is automatically added)
-" help @{0-9a-z".=*}		
-" Execute the contents of register {0-9a-z".=*} [count] times.  
-
-:let @q="2dw"
-easily fill the q register with a macro that deletes two words
-
-norm
-what's a good shorthand for "normal" on the #vim_command_line
-
-:argdo norm @q
-run your last macro against all files in the args
-" :argdo[!] {cmd}		Execute {cmd} for each file in the argument list.
-
-:.,. w !sh
-execute the contents of the current line in the current file in sh
-" help :w
-" :[range]w[rite] [++opt] !{cmd} 
-" Execute {cmd} with [range] lines as standard input
-"
-<c-]>
-if you have ctags working correctly, how do you jump to the definition of a function?
-
-<c-t>
-if you've made a ctag jump, how can you jump back other than <c-o>?
-
-gi
-if you left insert mode to go look at something elsewhere in the file, how can you get back to where you were and also back into insert mode?
-" help gi
-" Insert text in the same position as where Insert mode was stopped last time in the current buffer.
-
-:tag save
-if you want to look up the definition of save using ctags
-
-g?(some movement)
-rot13 the text selected by some movement
-
-:all
-open in window for each file in the arguments list, close other windows
-
-:args
-display the argument list
 
 = Known
 
