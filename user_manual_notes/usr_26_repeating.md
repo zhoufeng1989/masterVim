@@ -13,7 +13,7 @@ Subtract [count] to the number or alphabetic character at or after the cursor.
 
 **make a change in many files**
 
-+   argument list
++   argdo {cmd}, excute {cmd} for each file in the  argument list
 
     ```
     #print the argument list
@@ -22,25 +22,26 @@ Subtract [count] to the number or alphabetic character at or after the cursor.
     #define {arglist} as the new argument list and edit the first one
     :args {arglist} 
 
-    #Execute {cmd} for each file in the argument list.  
-    #It works like doing this :rewind :{cmd} :next :{cmd}
+    #It works like doing this 
+    #:rewind 
+    #:{cmd} 
+    #:next 
+    #:{cmd}
     #:argdo %s/\<x_cnt\>/x_counter/ge | update
     :argdo {cmd}
     ```
 
-+   windows
++   windo {cmd}, execute {cmd} in each window
     ```
-    # Execute {cmd} in each window.              
     # It works like doing this: CTRL-W t :{cmd} CTRL-W w :{cmd} etc.                               
     # This only operates in the current tab page.
     :windo {cmd}
     ```
     
 
-+   buffers
++   bufdo {cmd} execute {cmd} in each buffer in the buffer list.
     ```
-    # Execute {cmd} in each buffer in the buffer list.
-    # It works like doing this: >                     
+    # It works like doing this:                   
     #    :bfirst                                 
     #    :{cmd}                                  
     #    :bnext                                  
@@ -49,16 +50,14 @@ Subtract [count] to the number or alphabetic character at or after the cursor.
     :bufdo {cmd}
     ```
 
-+   tabs
++   windo {cmd} execute {cmd} in the current window of each tab page. 
     ```
-    # Execute {cmd} in each tab page. 
     # It works like doing this: >     
     # 	:tabfirst               
     # 	:{cmd}                  
     # 	:tabnext                
     # 	:{cmd}                  
     # 	etc.                    
-    This only operates in the current window of each tab page.
     :tabdo {cmd}
     ```
 
