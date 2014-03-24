@@ -62,6 +62,7 @@ Subtract [count] to the number or alphabetic character at or after the cursor.
     ```
 
 **using VIM from a shell script**
+
     ```
     # -e for ex mode
     # -s for silent mode
