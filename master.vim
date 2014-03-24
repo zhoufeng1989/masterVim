@@ -36,6 +36,21 @@ finish
 
 = Study
 
+:set
+show all options differ from default value
+
+:set {option}?
+show value of {option}
+
+:set {option}
+Toggle option:switch it on
+Number/String option: show value
+
+:set no{option}
+Toggle option: Reset,switch it off
+
+x
+delete character
 
 -
 in normal mode, how do you move to the first non-whitespace character of the previous line
@@ -989,6 +1004,9 @@ how can you decrement the first number on the first line of the file? (how would
 
 /\cruby
 do a case-insensitive search for ruby (the \c can be anywhere, including at the end)
+
+<c-g> or g<c-g>
+where you are in the file
 
 = Known
 
