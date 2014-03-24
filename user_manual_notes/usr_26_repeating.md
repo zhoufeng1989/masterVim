@@ -1,11 +1,15 @@
 **repeat with visual mode**
 
-gv: Start Visual mode with the same area as the previous area and the same mode.
+*gv*       
+Start Visual mode with the same area as the previous area and the same mode.
 
 **add and subtract**
 
-+   [count]CTRL-A			Add [count] to the number or alphabetic character at or after the cursor.  
-+   [count]CTRL-X          Subtract [count] to the number or alphabetic character at or after the cursor.   
++   [count]CTRL-A			
+Add [count] to the number or alphabetic character at or after the cursor.  
+
++   [count]CTRL-X          
+Subtract [count] to the number or alphabetic character at or after the cursor.   
 
 **make a change in many files**
 
@@ -59,7 +63,6 @@ gv: Start Visual mode with the same area as the previous area and the same mode.
     ```
 
 **using VIM from a shell script**
-
     ```
     # -e for ex mode
     # -s for silent mode
@@ -76,5 +79,4 @@ gv: Start Visual mode with the same area as the previous area and the same mode.
     
     # record typed keys, -W overwriten existed file
     vim -w script file
-
     ```
