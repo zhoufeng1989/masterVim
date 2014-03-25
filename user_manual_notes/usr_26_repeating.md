@@ -81,5 +81,5 @@ vim -s script file
 ls | vim -
 
 #  record typed keys, -W overwriten existed file
-vim -w script file ```
+vim -w script file 
 ```
