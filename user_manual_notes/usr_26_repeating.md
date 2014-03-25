@@ -67,19 +67,19 @@ Subtract [count] to the number or alphabetic character at or after the cursor.
 **using VIM from a shell script**
 
 ```
-"  -e for ex mode
-"  -s for silent mode
-"  change.vim vim commands file
-"  use vim in ex mode
+#  -e for ex mode
+#  -s for silent mode
+#  change.vim vim commands file
+#  use vim in ex mode
 vim -e -s file < change.vim
 
-"  -s here is for script without -e option
-"  use vim in normal mode
+#  -s here is for script without -e option
+#  use vim in normal mode
 vim -s script file
 
-"  read from stdin
+#  read from stdin
 ls | vim -
 
-"  record typed keys, -W overwriten existed file
-vim -w script file
+#  record typed keys, -W overwriten existed file
+vim -w script file ```
 ```
