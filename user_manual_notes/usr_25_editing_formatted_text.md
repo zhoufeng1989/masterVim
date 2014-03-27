@@ -9,8 +9,7 @@ insert.
 This option changes how text is displayed.  It doesn't change the text in the buffer.
 When on, lines longer than the width of the window will wrap and displaying
 continues on the next line.  When off lines will not wrap and only part of long
-lines will be displayed.  When the cursor is moved to a part that is not shown,
-the screen will scroll horizontally.
+lines will be displayed.  When the cursor is moved to a part that is not shown, the screen will scroll horizontally.
 
 
 **format text**
@@ -60,7 +59,7 @@ Number of spaces that a `<Tab>` counts for while performing editing operations, 
 
 **deal with long lines**
 
-|             |
+|   key       |     meaning
 |:------------|:---------------------------------------------
 |    zh       |    scroll right
 |    4zh      |    scroll four characters right
@@ -71,7 +70,7 @@ Number of spaces that a `<Tab>` counts for while performing editing operations, 
 |    zL       |    scroll half a window width left
 |    zs       |    scroll left to put the cursor at the start
 
-|        |
+|  key   |      meaning
 |:-------|:--------------------------------------------------
 |   g0   | to first visible character in this line
 |   g^   | to first non-blank visible character in this line
